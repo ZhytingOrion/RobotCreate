@@ -12,6 +12,7 @@ public class Plane_RobotCreate : MonoBehaviour {
     public List<Btn_RobotCreated_Choosen> ChoosenBtns = new List<Btn_RobotCreated_Choosen>();
     public GameObject ChoosenBtnTap = null;
     public GameObject Tip;
+    public Material outlineMat;
 
     //暂用
     [HideInInspector]
@@ -22,9 +23,9 @@ public class Plane_RobotCreate : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        CreateChoosenBtn("Cola Can");
-        CreateChoosenBtn("binoculars");
-        CreateChoosenBtn("bin");
+        //CreateChoosenBtn("Cola Can");
+        //CreateChoosenBtn("binoculars");
+        //CreateChoosenBtn("bin");
     }
 	
 	// Update is called once per frame
@@ -53,11 +54,22 @@ public class Plane_RobotCreate : MonoBehaviour {
 
     public void setCntControlObj(GameObject obj, int index)
     {
+        if(this.cntControlObj!=null)
+        {
+            GameObject outline = this.cntControlObj.transform.Find("Outline").gameObject;
+            if(outline!=null)
+                outline.SetActive(false);
+        }
+
         if(this.cntControlObjIndex!=-1 && this.cntControlObjIndex<ChoosenBtns.Count)
             ChoosenBtns[this.cntControlObjIndex].Recover();
 
         this.cntControlObj = obj;
         this.cntControlObjIndex = index;
+
+        GameObject outlineObj = this.cntControlObj.transform.Find("Outline").gameObject;
+        if(outlineObj!=null)
+            outlineObj.SetActive(true);
 
         this.cntControlObjChange();
 
@@ -78,21 +90,47 @@ public class Plane_RobotCreate : MonoBehaviour {
         }
     }
 
-    public void CreateChoosenBtn(string objName)
-    {
-        GameObject choosenBtn = Instantiate(Resources.Load<GameObject>("UI/ChooseButton"), ChoosenBtnTap.transform);
-                
+    public Btn_RobotCreated_Choosen CreateChoosenBtn(string objName)
+    {                
+        //Create Obj
         GameObject myObj = Instantiate(Resources.Load<GameObject>("RobotComponents/" + objName));
         myObj.transform.parent = robot_create.transform;
         myObj.transform.localPosition = Vector3.zero;
 
-        Sprite tex = Resources.Load<Sprite>("RobotComponents/UI/Thumbnail_" + objName);
+        //Set Outline
+        GameObject outlineObj = Instantiate(Resources.Load<GameObject>("RobotComponents/" + objName));
+        outlineObj.name = "Outline";
+        outlineObj.transform.parent = myObj.transform;
+        outlineObj.transform.localPosition = Vector3.zero;
+        if (outlineObj.GetComponent<Renderer>() !=null)
+        {
+            Material[] mats = outlineObj.GetComponent<Renderer>().sharedMaterials;
+            for (int i = 0; i < mats.Length; i++)
+            {
+                mats[i] = outlineMat;
+            }
+            outlineObj.GetComponent<Renderer>().sharedMaterials = mats;
+        }
+        foreach(Renderer r in outlineObj.GetComponentsInChildren<Renderer>())
+        {
+            Material[] mats = r.sharedMaterials;
+            for(int i = 0; i<mats.Length; i++)
+            {
+                mats[i] = outlineMat;
+            }
+            r.sharedMaterials = mats;
+        }
+        outlineObj.SetActive(false);
 
+        //Create Choose Btn
+        GameObject choosenBtn = Instantiate(Resources.Load<GameObject>("UI/ChooseButton"), ChoosenBtnTap.transform);
+        Sprite tex = Resources.Load<Sprite>("RobotComponents/UI/Thumbnail_" + objName);
         Btn_RobotCreated_Choosen btn = choosenBtn.GetComponent<Btn_RobotCreated_Choosen>();
         btn.Inst(myObj, ChoosenBtns.Count, tex, this);
         ChoosenBtns.Add(btn);
 
         RerangeChoosenBtn();
+        return btn;
     }
 
     //暂用

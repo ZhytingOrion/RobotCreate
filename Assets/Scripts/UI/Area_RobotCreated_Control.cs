@@ -9,6 +9,7 @@ public class Area_RobotCreated_Control : MonoBehaviour
     public Btn_RobotCreated_ControlAreaBtn moveControl;
     public Btn_RobotCreated_ControlAreaBtn RotateControl;
     public Btn_RobotCreated_ControlAreaBtn ResizeControl;
+    public Btn_RobotCreated_ControlAreaBtn CopyControl;
     public RawImage Image_Camera;
     private int lastActiveControlBtn = -1;
 
@@ -50,8 +51,15 @@ public class Area_RobotCreated_Control : MonoBehaviour
         root.cntControlObjChange -= SetObjValues;
     }
     
-    public void OnBtnClicked(int index) //0 move  1 rotate  2 resize
+    public void OnBtnClicked(int index) //0 move  1 rotate  2 resize  3 Copy
     {
+        if(index == 3)
+        {
+            CopyControl.isBtnActive(false);
+            CopyObj();
+            return;
+        }
+
         if(lastActiveControlBtn == -1)
         {
             ShowControlArea(true);
@@ -156,6 +164,24 @@ public class Area_RobotCreated_Control : MonoBehaviour
             scaleDir += Vector3.up;
         if (toggle_ScaleZ.isOn)
             scaleDir += Vector3.forward;
+    }
+
+    //CopyControl
+    public void CopyObj()
+    {
+        if (root.cntControlObj == null)
+        {
+            root.ShowTip();
+        }
+        else
+        {
+            GameObject obj = root.cntControlObj;
+            Btn_RobotCreated_Choosen btn = root.CreateChoosenBtn(obj.name.Replace("(Clone)", ""));
+            GameObject copyObj = btn.myObj;
+            copyObj.transform.localPosition = obj.transform.localPosition;
+            copyObj.transform.localRotation = obj.transform.localRotation;
+            copyObj.transform.localScale = obj.transform.localScale;
+        }
     }
 
     public void SetObjValues()
