@@ -34,10 +34,16 @@ public class Btn_RobotCreated_ScaleBtn : MonoBehaviour, IPointerDownHandler, IPo
     public void OnPointerDown(PointerEventData data)
     {
         isClicked = true;
+        GameObject obj = controlArea.root.cntControlObj;
+        if (obj != null && controlArea.speedScale > 0)
+            controlArea.root.withdrawBtn.AddOp(controlArea.root.cntControlObj, RobotCreated_Operation_Name.Resize);
     }
 
     public void OnPointerUp(PointerEventData data)
     {
         isClicked = false;
+        GameObject obj = controlArea.root.cntControlObj;
+        if (obj != null && controlArea.speedScale > 0)
+            controlArea.root.withdrawBtn.ModifyOp(controlArea.root.cntControlObj, RobotCreated_Operation_Name.Resize);
     }
 }

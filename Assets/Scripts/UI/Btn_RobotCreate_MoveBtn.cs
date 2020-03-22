@@ -33,10 +33,16 @@ public class Btn_RobotCreate_MoveBtn : MonoBehaviour, IPointerDownHandler, IPoin
     public void OnPointerDown(PointerEventData data)
     {
         isClicked = true;
+        GameObject obj = controlArea.root.cntControlObj;
+        if (obj != null && controlArea.speed > 0)
+            controlArea.root.withdrawBtn.AddOp(controlArea.root.cntControlObj, RobotCreated_Operation_Name.Move);
     }
 
     public void OnPointerUp(PointerEventData data)
     {
         isClicked = false;
+        GameObject obj = controlArea.root.cntControlObj;
+        if (obj != null && controlArea.speed > 0)
+            controlArea.root.withdrawBtn.ModifyOp(controlArea.root.cntControlObj,RobotCreated_Operation_Name.Move);
     }
 }

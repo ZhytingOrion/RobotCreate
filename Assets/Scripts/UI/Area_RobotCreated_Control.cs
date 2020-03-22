@@ -9,7 +9,6 @@ public class Area_RobotCreated_Control : MonoBehaviour
     public Btn_RobotCreated_ControlAreaBtn moveControl;
     public Btn_RobotCreated_ControlAreaBtn RotateControl;
     public Btn_RobotCreated_ControlAreaBtn ResizeControl;
-    public Btn_RobotCreated_ControlAreaBtn CopyControl;
     public RawImage Image_Camera;
     private int lastActiveControlBtn = -1;
 
@@ -51,15 +50,8 @@ public class Area_RobotCreated_Control : MonoBehaviour
         root.cntControlObjChange -= SetObjValues;
     }
     
-    public void OnBtnClicked(int index) //0 move  1 rotate  2 resize  3 Copy
+    public void OnBtnClicked(int index) //0 move  1 rotate  2 resize  3 Copy  4 Withdraw
     {
-        if(index == 3)
-        {
-            CopyControl.isBtnActive(false);
-            CopyObj();
-            return;
-        }
-
         if(lastActiveControlBtn == -1)
         {
             ShowControlArea(true);
@@ -181,6 +173,8 @@ public class Area_RobotCreated_Control : MonoBehaviour
             copyObj.transform.localPosition = obj.transform.localPosition;
             copyObj.transform.localRotation = obj.transform.localRotation;
             copyObj.transform.localScale = obj.transform.localScale;
+
+            root.withdrawBtn.AddOp(btn, RobotCreated_Operation_Name.Copy);
         }
     }
 

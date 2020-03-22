@@ -42,6 +42,7 @@ public class Btn_RobotCreated_ControlAreaBtn : MonoBehaviour, IPointerEnterHandl
 
     public void OnClick()
     {
+        if (controlArea == null) return;
         this.isBtnShow = !this.isBtnShow;
         isBtnActive(this.isBtnShow);
         controlArea.OnBtnClicked(this.index);

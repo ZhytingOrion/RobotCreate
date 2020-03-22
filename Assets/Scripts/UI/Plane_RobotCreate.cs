@@ -11,6 +11,7 @@ public class Plane_RobotCreate : MonoBehaviour {
     public int cntControlObjIndex = -1;
     public List<Btn_RobotCreated_Choosen> ChoosenBtns = new List<Btn_RobotCreated_Choosen>();
     public GameObject ChoosenBtnTap = null;
+    public Btn_RobotCreated_WithdrawBtn withdrawBtn = null;
     public GameObject Tip;
     public Material outlineMat;
 
@@ -84,8 +85,20 @@ public class Plane_RobotCreate : MonoBehaviour {
     {
         if(this.cntControlObjIndex != -1 && this.cntControlObj != null)
         {
+            if (withdrawBtn != null)
+                withdrawBtn.AddOpDelete(ChoosenBtns[this.cntControlObjIndex]);
             Destroy(ChoosenBtns[this.cntControlObjIndex].gameObject);
             ChoosenBtns.RemoveAt(this.cntControlObjIndex);
+            RerangeChoosenBtn();
+        }
+    }
+
+    public void DeleteObjSpecial(Btn_RobotCreated_Choosen choosebtn)   //using in withdraw
+    {
+        if(choosebtn!=null)
+        {
+            Destroy(choosebtn.gameObject);
+            ChoosenBtns.Remove(choosebtn);
             RerangeChoosenBtn();
         }
     }
