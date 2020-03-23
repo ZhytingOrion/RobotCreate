@@ -4629,7 +4629,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 100000, guid: 388d73db1fe78a544bc584bf5f22a1e6, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 388d73db1fe78a544bc584bf5f22a1e6, type: 3}
       propertyPath: m_LocalPosition.x
@@ -5139,6 +5139,7 @@ MonoBehaviour:
   cntControlObjIndex: -1
   ChoosenBtns: []
   ChoosenBtnTap: {fileID: 727266914}
+  MaxChoosenBtn: 17
   withdrawBtn: {fileID: 1812478275}
   Tip: {fileID: 2107360940}
   outlineMat: {fileID: 2100000, guid: 83b462c981b28c34daf0e301d86aa36d, type: 2}

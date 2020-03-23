@@ -169,12 +169,15 @@ public class Area_RobotCreated_Control : MonoBehaviour
         {
             GameObject obj = root.cntControlObj;
             Btn_RobotCreated_Choosen btn = root.CreateChoosenBtn(obj.name.Replace("(Clone)", ""));
-            GameObject copyObj = btn.myObj;
-            copyObj.transform.localPosition = obj.transform.localPosition;
-            copyObj.transform.localRotation = obj.transform.localRotation;
-            copyObj.transform.localScale = obj.transform.localScale;
+            if (btn != null)
+            {
+                GameObject copyObj = btn.myObj;
+                copyObj.transform.localPosition = obj.transform.localPosition;
+                copyObj.transform.localRotation = obj.transform.localRotation;
+                copyObj.transform.localScale = obj.transform.localScale;
 
-            root.withdrawBtn.AddOp(btn, RobotCreated_Operation_Name.Copy);
+                root.withdrawBtn.AddOp(btn, RobotCreated_Operation_Name.Copy);
+            }
         }
     }
 

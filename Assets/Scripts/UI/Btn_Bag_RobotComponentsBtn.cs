@@ -23,6 +23,7 @@ public class Btn_Bag_RobotComponentsBtn : MonoBehaviour
     public void OnClick()
     {
         Btn_RobotCreated_Choosen choosen = root.CreateChoosenBtn(compName);
-        root.withdrawBtn.AddOp(choosen, RobotCreated_Operation_Name.Create);
+        if (choosen != null)
+            root.withdrawBtn.AddOp(choosen, RobotCreated_Operation_Name.Create);
     }
 }

@@ -11,7 +11,7 @@ public class Plane_RobotCreate : MonoBehaviour {
     public int cntControlObjIndex = -1;
     public List<Btn_RobotCreated_Choosen> ChoosenBtns = new List<Btn_RobotCreated_Choosen>();
     public GameObject ChoosenBtnTap = null;
-    public int MaxChoosenBtn = 16;
+    public int MaxChoosenBtn = 17;
     public Btn_RobotCreated_WithdrawBtn withdrawBtn = null;
     public GameObject Tip;
     public Material outlineMat;
@@ -108,6 +108,12 @@ public class Plane_RobotCreate : MonoBehaviour {
 
     public Btn_RobotCreated_Choosen CreateChoosenBtn(string objName)
     {                
+        if(ChoosenBtns.Count >= MaxChoosenBtn)
+        {
+            ShowTip("零件过多！请先删除一个零件！");
+            return null;
+        }
+
         //Create Obj
         GameObject myObj = Instantiate(Resources.Load<GameObject>("RobotComponents/" + objName));
         myObj.transform.parent = robot_create.transform;
@@ -141,6 +147,7 @@ public class Plane_RobotCreate : MonoBehaviour {
 
         //Create Choose Btn
         GameObject choosenBtn = Instantiate(Resources.Load<GameObject>("UI/ChooseButton"), ChoosenBtnTap.transform);
+        choosenBtn.transform.SetSiblingIndex(0);
         Sprite tex = Resources.Load<Sprite>("RobotComponents/UI/Thumbnail_" + objName);
         Btn_RobotCreated_Choosen btn = choosenBtn.GetComponent<Btn_RobotCreated_Choosen>();
         btn.Inst(myObj, ChoosenBtns.Count, tex, this);
@@ -163,15 +170,15 @@ public class Plane_RobotCreate : MonoBehaviour {
         newObjName = inputFiled.text;
     }
 
-    public void RerangeChoosenBtn()   //8个最多了一排
+    public void RerangeChoosenBtn()   //9个最多了一排
     {
-        int number = Mathf.Min(ChoosenBtns.Count, 8);
+        int number = Mathf.Min(ChoosenBtns.Count, 9);
         int number2 = ChoosenBtns.Count - number;
         float middle = (number - 1) * 0.5f;
         for(int i = 0; i<number; ++i)
         {
             Vector3 pos = ChoosenBtns[i].transform.localPosition;
-            ChoosenBtns[i].transform.localPosition = new Vector3((i - middle) * 180.0f, pos.y, pos.z);
+            ChoosenBtns[i].transform.localPosition = new Vector3((i - middle) * 180.0f - 30.0f, pos.y, pos.z);
             ChoosenBtns[i].index = i;
             ChoosenBtns[i].FloorLevel = 0;
         }
@@ -179,17 +186,17 @@ public class Plane_RobotCreate : MonoBehaviour {
         for(int i = number; i<ChoosenBtns.Count; ++i)
         {
             Vector3 pos = ChoosenBtns[i].transform.localPosition;
-            ChoosenBtns[i].transform.localPosition = new Vector3((i - number - middle2) * 180.0f, pos.y + ChoosenBtns[i].FloorLevel * ChoosenBtns[i].height, pos.z);
-            ChoosenBtns[i].index = i;
             ChoosenBtns[i].FloorLevel = 1;
+            ChoosenBtns[i].transform.localPosition = new Vector3((i - number) * 180.0f - 660f, ChoosenBtns[i].FloorLevel * ChoosenBtns[i].height - 30.0f, pos.z);
+            ChoosenBtns[i].index = i;
         }
     }
 
-    public void ShowTip()
+    public void ShowTip(string text = "请先选择要控制的物体！")
     {
         if (Tip.activeInHierarchy) return;
         Tip.SetActive(true);
-        Tip.transform.Find("Text").GetComponent<Text>().text = "请先选择要控制的物体！";
+        Tip.transform.Find("Text").GetComponent<Text>().text = text;
         StartCoroutine(HideTipDelay(Tip, 1.0f));
     }
 

@@ -27,7 +27,7 @@ public class Btn_RobotCreated_Choosen : MonoBehaviour, IPointerEnterHandler, IPo
     {
         if (objTexComp == null)
             objTexComp = this.transform.Find("ObjImage").GetComponent<Image>();
-        height = this.GetComponent<RectTransform>().sizeDelta.y;
+        height = this.GetComponent<RectTransform>().sizeDelta.y * 0.5f;
     }
 
     public void Inst(GameObject obj, int index, Sprite tex, Plane_RobotCreate root)
