@@ -12,16 +12,22 @@ public class Btn_RobotCreated_Choosen : MonoBehaviour, IPointerEnterHandler, IPo
     public GameObject myObj = null;
     [HideInInspector]
     public Sprite objTex = null;
+    [HideInInspector]
+    public int FloorLevel = 0;
+    [HideInInspector]
+    public float height;
 
     public Plane_RobotCreate planeRoot = null;
     public Sprite highLightTex = null;
     public Sprite normalTex = null;
     public Image objTexComp = null;
 
+
     public void Awake()
     {
         if (objTexComp == null)
             objTexComp = this.transform.Find("ObjImage").GetComponent<Image>();
+        height = this.GetComponent<RectTransform>().sizeDelta.y;
     }
 
     public void Inst(GameObject obj, int index, Sprite tex, Plane_RobotCreate root)
@@ -49,12 +55,12 @@ public class Btn_RobotCreated_Choosen : MonoBehaviour, IPointerEnterHandler, IPo
 
     public void OnPointerEnter(PointerEventData data)
     {
-        StartCoroutine(flowAnim(0.0f));
+        StartCoroutine(flowAnim(0.0f + FloorLevel * height));
     }
 
     public void OnPointerExit(PointerEventData data)
     {
-        StartCoroutine(flowAnim(-30.0f));
+        StartCoroutine(flowAnim(-30.0f + FloorLevel * height));
     }
 
     public void BeChoosen()

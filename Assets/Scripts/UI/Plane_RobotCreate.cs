@@ -11,6 +11,7 @@ public class Plane_RobotCreate : MonoBehaviour {
     public int cntControlObjIndex = -1;
     public List<Btn_RobotCreated_Choosen> ChoosenBtns = new List<Btn_RobotCreated_Choosen>();
     public GameObject ChoosenBtnTap = null;
+    public int MaxChoosenBtn = 16;
     public Btn_RobotCreated_WithdrawBtn withdrawBtn = null;
     public GameObject Tip;
     public Material outlineMat;
@@ -21,6 +22,8 @@ public class Plane_RobotCreate : MonoBehaviour {
     public InputField inputFiled;
 
     public Action cntControlObjChange;
+
+    private Material[] sharedMats;
 
 	// Use this for initialization
 	void Start () {
@@ -111,27 +114,28 @@ public class Plane_RobotCreate : MonoBehaviour {
         myObj.transform.localPosition = Vector3.zero;
 
         //Set Outline
-        GameObject outlineObj = Instantiate(Resources.Load<GameObject>("RobotComponents/" + objName));
+        GameObject outlineObj = Instantiate(myObj);
         outlineObj.name = "Outline";
         outlineObj.transform.parent = myObj.transform;
         outlineObj.transform.localPosition = Vector3.zero;
-        if (outlineObj.GetComponent<Renderer>() !=null)
+        Renderer renderer = outlineObj.GetComponent<Renderer>();
+        if (renderer !=null)
         {
-            Material[] mats = outlineObj.GetComponent<Renderer>().sharedMaterials;
-            for (int i = 0; i < mats.Length; i++)
+            sharedMats = renderer.sharedMaterials;
+            for (int i = 0; i < sharedMats.Length; i++)
             {
-                mats[i] = outlineMat;
+                sharedMats[i] = outlineMat;
             }
-            outlineObj.GetComponent<Renderer>().sharedMaterials = mats;
+            renderer.sharedMaterials = sharedMats;
         }
         foreach(Renderer r in outlineObj.GetComponentsInChildren<Renderer>())
         {
-            Material[] mats = r.sharedMaterials;
-            for(int i = 0; i<mats.Length; i++)
+            sharedMats = r.sharedMaterials;
+            for(int i = 0; i< sharedMats.Length; i++)
             {
-                mats[i] = outlineMat;
+                sharedMats[i] = outlineMat;
             }
-            r.sharedMaterials = mats;
+            r.sharedMaterials = sharedMats;
         }
         outlineObj.SetActive(false);
 
@@ -159,15 +163,25 @@ public class Plane_RobotCreate : MonoBehaviour {
         newObjName = inputFiled.text;
     }
 
-    public void RerangeChoosenBtn()
+    public void RerangeChoosenBtn()   //8个最多了一排
     {
-        int number = ChoosenBtns.Count;
+        int number = Mathf.Min(ChoosenBtns.Count, 8);
+        int number2 = ChoosenBtns.Count - number;
         float middle = (number - 1) * 0.5f;
-        for(int i = 0; i<number; i++)
+        for(int i = 0; i<number; ++i)
         {
             Vector3 pos = ChoosenBtns[i].transform.localPosition;
             ChoosenBtns[i].transform.localPosition = new Vector3((i - middle) * 180.0f, pos.y, pos.z);
             ChoosenBtns[i].index = i;
+            ChoosenBtns[i].FloorLevel = 0;
+        }
+        float middle2 = (number2 - 1) * 0.5f;
+        for(int i = number; i<ChoosenBtns.Count; ++i)
+        {
+            Vector3 pos = ChoosenBtns[i].transform.localPosition;
+            ChoosenBtns[i].transform.localPosition = new Vector3((i - number - middle2) * 180.0f, pos.y + ChoosenBtns[i].FloorLevel * ChoosenBtns[i].height, pos.z);
+            ChoosenBtns[i].index = i;
+            ChoosenBtns[i].FloorLevel = 1;
         }
     }
 
