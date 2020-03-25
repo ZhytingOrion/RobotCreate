@@ -14,7 +14,7 @@ public class Plane_RobotCreate : MonoBehaviour {
     public int MaxChoosenBtn = 17;
     public Btn_RobotCreated_WithdrawBtn withdrawBtn = null;
     public GameObject Tip;
-    public Material outlineMat;
+    public OutlineCommandBuffer outlineEffect;
 
     //暂用
     [HideInInspector]
@@ -24,12 +24,11 @@ public class Plane_RobotCreate : MonoBehaviour {
     public Action cntControlObjChange;
 
     private Material[] sharedMats;
+    private RobotCreated robot = null;
 
 	// Use this for initialization
 	void Start () {
-        //CreateChoosenBtn("Cola Can");
-        //CreateChoosenBtn("binoculars");
-        //CreateChoosenBtn("bin");
+
     }
 	
 	// Update is called once per frame
@@ -39,7 +38,7 @@ public class Plane_RobotCreate : MonoBehaviour {
 
     public void Submit()
     {
-        RobotCreated robot = new RobotCreated();
+        robot = new RobotCreated();
         if (robot_create == null)
             robot_create = GameObject.Find("Robot");
         for(int i = 0; i<robot_create.transform.childCount; i++)
@@ -58,22 +57,13 @@ public class Plane_RobotCreate : MonoBehaviour {
 
     public void setCntControlObj(GameObject obj, int index)
     {
-        if(this.cntControlObj!=null)
-        {
-            GameObject outline = this.cntControlObj.transform.Find("Outline").gameObject;
-            if(outline!=null)
-                outline.SetActive(false);
-        }
-
         if(this.cntControlObjIndex!=-1 && this.cntControlObjIndex<ChoosenBtns.Count)
             ChoosenBtns[this.cntControlObjIndex].Recover();
 
         this.cntControlObj = obj;
         this.cntControlObjIndex = index;
 
-        GameObject outlineObj = this.cntControlObj.transform.Find("Outline").gameObject;
-        if(outlineObj!=null)
-            outlineObj.SetActive(true);
+        outlineEffect.OnChangeRenderObj(obj);
 
         this.cntControlObjChange();
 
@@ -118,32 +108,6 @@ public class Plane_RobotCreate : MonoBehaviour {
         GameObject myObj = Instantiate(Resources.Load<GameObject>("RobotComponents/" + objName));
         myObj.transform.parent = robot_create.transform;
         myObj.transform.localPosition = Vector3.zero;
-
-        //Set Outline
-        GameObject outlineObj = Instantiate(myObj);
-        outlineObj.name = "Outline";
-        outlineObj.transform.parent = myObj.transform;
-        outlineObj.transform.localPosition = Vector3.zero;
-        Renderer renderer = outlineObj.GetComponent<Renderer>();
-        if (renderer !=null)
-        {
-            sharedMats = renderer.sharedMaterials;
-            for (int i = 0; i < sharedMats.Length; i++)
-            {
-                sharedMats[i] = outlineMat;
-            }
-            renderer.sharedMaterials = sharedMats;
-        }
-        foreach(Renderer r in outlineObj.GetComponentsInChildren<Renderer>())
-        {
-            sharedMats = r.sharedMaterials;
-            for(int i = 0; i< sharedMats.Length; i++)
-            {
-                sharedMats[i] = outlineMat;
-            }
-            r.sharedMaterials = sharedMats;
-        }
-        outlineObj.SetActive(false);
 
         //Create Choose Btn
         GameObject choosenBtn = Instantiate(Resources.Load<GameObject>("UI/ChooseButton"), ChoosenBtnTap.transform);
@@ -204,6 +168,15 @@ public class Plane_RobotCreate : MonoBehaviour {
     {
         yield return new WaitForSeconds(time);
         obj.SetActive(false);
+
+
+        //to move
+        if (robot!=null)
+        {
+            this.transform.parent.Find("Plane_RobotAddFunction").GetComponent<Plane_RobotAddFunction>().SetRobotInfo(robot);
+            this.transform.parent.Find("Plane_RobotAddFunction").gameObject.SetActive(true);
+            this.gameObject.SetActive(false);
+        }
     }
 
     public void ShowSuccessSubmitTip()

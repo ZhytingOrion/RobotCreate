@@ -1,4 +1,4 @@
-Shader "Effect/OutlineEffectShader"
+Shader "Hidden/OutlineEffectShader"
 {
     Properties
     {

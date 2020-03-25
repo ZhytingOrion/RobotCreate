@@ -71,7 +71,20 @@ public class RobotController : MonoBehaviour {
             flag_isFallingtoGround = true;
             GameControl.Instance.LoadCanvas(CanvasType.Tip_Fall);
         }
-	}
+
+        if(Input.GetKey(KeyCode.O))
+        {
+            float timning = Shader.GetGlobalFloat("_BurnTiming");
+            if(timning < 1.0f)
+                Shader.SetGlobalFloat("_BurnTiming", timning + 3.0f * Time.deltaTime);
+        }
+        if (Input.GetKey(KeyCode.K))
+        {
+            float timning = Shader.GetGlobalFloat("_BurnTiming");
+            if(timning > 0.0f)
+                Shader.SetGlobalFloat("_BurnTiming", timning - 0.5f * Time.deltaTime);
+        }
+    }
 
     //Getting Input of Walking
     bool isWalking()
