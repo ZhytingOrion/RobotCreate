@@ -6,8 +6,10 @@ public class Plane_RobotAddFunction : MonoBehaviour
 {
     public Camera m_camera;
     public GameObject Robot;
+    public float RobotRotateSpeed = 10.0f;
 
-    private RobotCreated robotInfo;
+    private RobotCreated m_robotInfo;
+    private bool m_isRobotRotate = true;
 
     // Start is called before the first frame update
     void Start()
@@ -17,13 +19,11 @@ public class Plane_RobotAddFunction : MonoBehaviour
 
     public void OnEnable()
     {
-        Debug.Log("出现了！");
         m_camera.transform.position = new Vector3(0, 3, -4);
         m_camera.GetComponent<OutlineCommandBuffer>().OnChangeRenderObj(null);
         Rigidbody rigidbody = Robot.AddComponent<Rigidbody>();
-        rigidbody.mass = GetMass(robotInfo);
+        rigidbody.mass = GetMass(m_robotInfo);
         Robot.transform.localPosition += Vector3.up * 3.0f;
-        
     }
 
     public float GetMass(RobotCreated r)
@@ -46,12 +46,25 @@ public class Plane_RobotAddFunction : MonoBehaviour
 
     public void SetRobotInfo(RobotCreated r)
     {
-        this.robotInfo = r;
+        this.m_robotInfo = r;
+    }
+
+    public void SetRobotRotate(bool isRotate)
+    {
+        this.m_isRobotRotate = isRotate;
+    }
+
+    public void ResetRobotRotate()
+    {
+        Robot.transform.localRotation = Quaternion.Euler(Vector3.zero);
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if(m_isRobotRotate)
+        {
+            Robot.transform.Rotate(Vector3.up, RobotRotateSpeed * Time.deltaTime);
+        }
     }
 }
